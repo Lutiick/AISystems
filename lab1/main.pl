@@ -150,7 +150,7 @@ hasType(battanian_scout, cavalry).
 hasType(battanian_falxman, melee).
 hasType(battanian_veteran_skirmisher, melee).
 
-
+% Поиск войск с типом во фракции %
 findTroopWithTypeInFraction(Troop, Type, Fraction) :- hasType(Troop, Type), hasFraction(Troop, Fraction).
 
 /*
@@ -163,16 +163,20 @@ isAllTypesInFraction(Fraction) :- hasType(Troop, X), hasFraction(Troop, Fraction
                                   not(Z = A).
 */
 
+% Проверяет содержатся ли все типы войск во фракции %
 isAllTypesInFraction(Fraction) :- 
     findall(Type, (hasType(Troop, Type), hasFraction(Troop, Fraction)), FractionTypes),
     list_to_set(FractionTypes, UniqueFractionTypes),
     findall(Type, type(Type), Types),
     permutation(Types, UniqueFractionTypes).
 
+% Поиск предка %
 findPredessor(Child, Parent) :- hasParent(Child, Parent).
 findPredessor(Child, Parent) :- hasParent(Child, Y), findPredessor(Y, Parent).
 
-
+% Поиск наследника с типом%
 findChildWithType(Parent, Child, Type) :- findPredessor(Child, Parent), hasType(Child, Type).
 
+
+% Проверка на возможность развития %
 canBeEvolvedToType(Troop, Type) :- findPredessor(X, Troop), hasType(X, Type).
